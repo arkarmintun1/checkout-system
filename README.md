@@ -1,70 +1,71 @@
-# Getting Started with Create React App
+# Checkout System
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project implements the checkout logic with discount and deals applied.
 
-## Available Scripts
+## Project setup
 
-In the project directory, you can run:
+-   Run `npm install`
+-   Run `npm start`
+-   Browser will be automatically launched. If not, go to `http://localhost:3000/`
 
-### `npm start`
+## Project Detail
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+According to the level of the user (`Associate` or `Diamond`), the discounted amounts are pre-configured as `5%` for `Associate` and `20%` for `Diamond`.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+![Initial Page](images/step-1.png)
 
-### `npm test`
+Two products are initially included. Quantity can be increased or decreased by clicking on `+` and `-` buttons respectively for each product. Once quantity is greater than zero, different discount and deal logics will be applied.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+![Associate User](images/step-2-associate.png)
 
-### `npm run build`
+For `Associate` user, only discount 5% will be applied for products.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+![Diamond User](images/step-2-diamond.png)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+For `Diamond` user, both special deals and discount logics will be considered and applied according to the quantity specified.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Deals
 
-### `npm run eject`
+-   Get a discount on Kone where 3 or more purchased. The price dropped to RM 2588.99 per unit
+-   Get a 3 for 2 deal on Ironhide Cartridge
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Test case
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+-   RECIPIENT: Diamond
+-   Cart Items: Kone, Kone, Kone, Kone, Ironhide Cartridge
+-   Total Expected: RM 10779.95
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+![Diamond User](images/step-2-diamond.png)
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+For testing purpose, user level selector is included in the top right corner.
 
-## Learn More
+### Deals Negotiation
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Currently, how to discount price according to deals is specified as below.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```
+{
+    id: 2,
+    name: 'Ironhide Cartridge',
+    price: 529.99,
+    currency: 'RM',
+    quantity: 0,
+    discount: [
+        // For Diamond Level user, if they buy 3 items, they will only have to pay for 2.
+        {
+            level: USER_LEVEL.DIAMOND,
+            type: DISCOUNT_TYPE.DEAL,
+            buy: 3,
+            pay: 2,
+        },
+    ],
+}
+```
 
-### Code Splitting
+For easy configuration, different deal types can be specified to differnt level of users. Deal logic will be applied in calculating the subtotal.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## Testing
 
-### Analyzing the Bundle Size
+Testing is done by `@testing-library/react` and tests are defined in `__test__` folders for respective react functional components at both page level and component level. Tests can be checked by running `npm test` or `npm run test`.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+![Test](images/step-3-test.png)
